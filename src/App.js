@@ -1,15 +1,25 @@
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Main from "./components/Main";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "./utils/api";
+import { CurrentUserContext } from "./contexts/CurrentUserContext";
 
 function App() {
-  // Carga de States de Popups
+  // Carga de States
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+
+  //Llamada de datos de Usuario de la Api
+  useEffect(()=>{
+    api.defaultProfile().then((fetchedUser)=>{
+        setCurrentUser(fetchedUser);
+    })
+  },[])
 
   // Funciones para cambiar los States de Popups
   function handleEditAvatarClick() {
@@ -42,6 +52,11 @@ function App() {
 
   return (
     <div className="page">
+      <CurrentUserContext.Provider 
+        value= {
+          currentUser
+        }
+      >
       <Header />
       <Main
         onEditProfileClick={handleEditProfileClick}
@@ -60,6 +75,7 @@ function App() {
       />
 
       <Footer />
+      </CurrentUserContext.Provider>
     </div>
   );
 }

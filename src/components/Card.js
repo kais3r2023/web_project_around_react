@@ -1,26 +1,60 @@
-import trashCan from "../images/Trash-Can.png"
-import likeImg from "../images/like.png"
+import trashCan from "../images/Trash-Can.png";
+import likeImg from "../images/like.png";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { useContext } from "react";
 
-function Card({name, link, likes, _id, onCardClick}){
-  function handleClick (){
-    onCardClick({name, link});
+function Card({card, name, link, likes, _id, onCardClick }) {
+  const currentUser = useContext(CurrentUserContext);
+
+  //Verificando si el id de la tarjeta es la del propietario
+
+  const isOwn = card.owner._id === currentUser._id;
+
+  // Variable para establecer ClassName si se muestra el icono de eliminar tarjeta
+
+  const cardDeleteButtonClassName = `gallery__card_trash-can-icon ${
+    isOwn ? "gallery__card_trash-can-icon" : "gallery__card_trash-can-icon_hidden"
+  }`;
+
+  
+  // Verificacion si el usuario a dado Like a la tarjeta
+  const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+  console.log(isLiked)
+
+  // Variable para Establecer ClassName si se ha dado like
+  const cardLikeButtonClassName = isLiked? 'black-like' : '';
+
+  function handleClick() {
+    onCardClick({ name, link });
   }
 
-  return(
+  return (
     <div className="card">
-  <div className="gallery__card">
-    <img className="gallery__card_trash-can-icon" id="trash-can-img" alt="Tachito de Basura" src={trashCan}/>
-    <img className="gallery__card_photo" src= {link} onClick={handleClick}/>
-    <div className="gallery__card_bar">
-      <h3 className="gallery__card_bar-title">{name}</h3>
-      <div>
-        <img className="gallery__card_bar-like" alt="Corazon Like" src= {likeImg}/>
-        <p className="gallery__card_bar-like-count">{likes? likes.length : ''}</p>
+      <div className="gallery__card">
+        <img
+          className={cardDeleteButtonClassName}
+          id="trash-can-img"
+          alt="Tachito de Basura"
+          src={trashCan}
+        />
+        <img className="gallery__card_photo" src={link} onClick={handleClick} />
+        <div className="gallery__card_bar">
+          <h3 className="gallery__card_bar-title">{name}</h3>
+          <div>
+            <img
+              className={`gallery__card_bar-like ${cardLikeButtonClassName}`}
+              alt="Corazon Like"
+              src={likeImg}
+            />
+            <p className="gallery__card_bar-like-count">
+              {likes ? likes.length : ""}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }
 
-export default Card
+export default Card;

@@ -1,10 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import addButton from "../images/Add Button.png";
 import editButton from "../images/Edit Button.png";
 import PopupWithForm from "./PopupWithForm.js";
 import api from "../utils/api.js";
 import Card from "./Card.js";
 import ImagePopup from "./ImagePopup.js";
+import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 function Main({
   onEditProfileClick,
@@ -23,21 +24,26 @@ function Main({
     isConfirmationPopupOpen,
   ] = isOpen;
 
+  // Declarada variable Actual Usuario
+  const currentUser = useContext(CurrentUserContext);
+
   //Carga de States de perfil
-  const [userName, setUserName] = useState("");
+  /* const [userName, setUserName] = useState("");
   const [userAbout, setUserAbout] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
+  const [userAvatar, setUserAvatar] = useState(""); */
+
+
   //Carga de state de Array de Cards
   const [cards, setCards] = useState([]);
 
   //Handler States de Perfil
-  useEffect(() => {
+  /* useEffect(() => {
     api.defaultProfile().then((profileInfo) => {
       setUserName(profileInfo.name);
       setUserAbout(profileInfo.about);
       setUserAvatar(profileInfo.avatar);
     });
-  }, []);
+  }, []); */
 
   //Handler states Array de Cards
   useEffect(() => {
@@ -45,6 +51,8 @@ function Main({
       setCards(arrayApiCards);
     });
   }, []);
+
+  console.log(cards);
 
   return (
     <>
@@ -60,11 +68,11 @@ function Main({
               className="profile__avatar"
               id="profileAvatar"
               alt="Avatar"
-              style={{ backgroundImage: `url(${userAvatar})` }}
+              style={{ backgroundImage: `url(${currentUser.avatar})` }}
             />
           </div>
           <div className="profile__content">
-            <h1 className="profile__content-name">{userName}</h1>
+            <h1 className="profile__content-name">{currentUser.name}</h1>
             <button className="profile__content-edit-button">
               <img
                 id="btnEdit"
@@ -73,7 +81,7 @@ function Main({
                 onClick={onEditProfileClick}
               />
             </button>
-            <h3 className="profile__content-subtitle">{userAbout}</h3>
+            <h3 className="profile__content-subtitle">{currentUser.about}</h3>
           </div>
           <button
             className="add-button-place"
@@ -93,6 +101,7 @@ function Main({
         {cards.map((dataCard) => (
           <Card
             key={`card-${dataCard.name}`}
+            card={dataCard}
             name={dataCard.name}
             link={dataCard.link}
             likes={dataCard.likes}
