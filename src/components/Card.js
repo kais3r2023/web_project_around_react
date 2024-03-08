@@ -3,7 +3,7 @@ import likeImg from "../images/like.png";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { useContext } from "react";
 
-function Card({card, name, link, likes, _id, onCardClick }) {
+function Card({card, name, link, likes, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
 
   //Verificando si el id de la tarjeta es la del propietario
@@ -20,13 +20,19 @@ function Card({card, name, link, likes, _id, onCardClick }) {
   // Verificacion si el usuario a dado Like a la tarjeta
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-  console.log(isLiked)
-
   // Variable para Establecer ClassName si se ha dado like
   const cardLikeButtonClassName = isLiked? 'black-like' : '';
 
   function handleClick() {
     onCardClick({ name, link });
+  }
+
+  function handleLikeClick(){
+    onCardLike(card);
+  }
+
+  function handleDeleteClick(){
+    onCardDelete(card);
   }
 
   return (
@@ -37,6 +43,7 @@ function Card({card, name, link, likes, _id, onCardClick }) {
           id="trash-can-img"
           alt="Tachito de Basura"
           src={trashCan}
+          onClick={handleDeleteClick}
         />
         <img className="gallery__card_photo" src={link} onClick={handleClick} />
         <div className="gallery__card_bar">
@@ -46,8 +53,9 @@ function Card({card, name, link, likes, _id, onCardClick }) {
               className={`gallery__card_bar-like ${cardLikeButtonClassName}`}
               alt="Corazon Like"
               src={likeImg}
+              onClick={handleLikeClick}
             />
-            <p className="gallery__card_bar-like-count">
+            <p className="gallery__card_bar-like-count" >
               {likes ? likes.length : ""}
             </p>
           </div>

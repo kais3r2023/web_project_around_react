@@ -51,18 +51,19 @@ class Api {
     }).then(this.returnResponse);
   }
   //Likes
-  addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "PUT",
-      headers: this._headers,
-    }).then(this.returnResponse);
-  }
-
-  deleteLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then(this.returnResponse);
+  
+  changeLikeCardStatus(cardId, isLiked){
+    if (isLiked){
+      return fetch(`${this._baseUrl}/cards/likes/${cardId}`,{
+        method: "DELETE",
+        headers: this._headers,
+      }).then(this.returnResponse);
+    } else{
+      return fetch(`${this._baseUrl}/cards/likes/${cardId}`,{
+        method: "PUT",
+        headers: this._headers,
+      }).then(this.returnResponse);
+    }
   }
 }
 
@@ -73,5 +74,7 @@ const api = new Api({
     "Content-Type": "application/json",
   },
 });
+
+
 
 export default api;

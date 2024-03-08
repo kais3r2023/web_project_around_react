@@ -2,7 +2,6 @@ import { React, useState, useEffect, useContext } from "react";
 import addButton from "../images/Add Button.png";
 import editButton from "../images/Edit Button.png";
 import PopupWithForm from "./PopupWithForm.js";
-import api from "../utils/api.js";
 import Card from "./Card.js";
 import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
@@ -11,11 +10,13 @@ function Main({
   onEditProfileClick,
   onAddPlaceClick,
   onEditAvatarClick,
-  onConfirmationClick,
   onCardClick,
   isOpen,
   selectedCard,
   onClose,
+  onCardDelete,
+  onCardLike,
+  cards,
 }) {
   const [
     isEditProfilePopupOpen,
@@ -26,33 +27,6 @@ function Main({
 
   // Declarada variable Actual Usuario
   const currentUser = useContext(CurrentUserContext);
-
-  //Carga de States de perfil
-  /* const [userName, setUserName] = useState("");
-  const [userAbout, setUserAbout] = useState("");
-  const [userAvatar, setUserAvatar] = useState(""); */
-
-
-  //Carga de state de Array de Cards
-  const [cards, setCards] = useState([]);
-
-  //Handler States de Perfil
-  /* useEffect(() => {
-    api.defaultProfile().then((profileInfo) => {
-      setUserName(profileInfo.name);
-      setUserAbout(profileInfo.about);
-      setUserAvatar(profileInfo.avatar);
-    });
-  }, []); */
-
-  //Handler states Array de Cards
-  useEffect(() => {
-    api.getCards().then((arrayApiCards) => {
-      setCards(arrayApiCards);
-    });
-  }, []);
-
-  console.log(cards);
 
   return (
     <>
@@ -100,122 +74,18 @@ function Main({
       <section className="gallery" id="gallery">
         {cards.map((dataCard) => (
           <Card
-            key={`card-${dataCard.name}`}
+            key={`card-${dataCard._id}`}
             card={dataCard}
             name={dataCard.name}
             link={dataCard.link}
             likes={dataCard.likes}
             _id={dataCard._id}
             onCardClick={onCardClick}
+            onCardLike={onCardLike}
+            onCardDelete={onCardDelete}
           />
         ))}
       </section>
-
-      <PopupWithForm
-        name={"Avatar"}
-        isOpen={isEditAvatarPopupOpen}
-        title={"Cambiar Foto De Perfil"}
-        onClose={onClose}
-      >
-        <form
-          className="formulary"
-          id="formulary-update-avatar-icon"
-          noValidate
-        >
-          <input
-            className="formulary__data"
-            id="photo-avatar"
-            type="url"
-            placeholder="Enlace de la nueva foto de perfil"
-            name="link"
-            required
-          />
-          <span className="photo-avatar-error"></span>
-          <button
-            type="submit"
-            className="formulary__save-button"
-            id="btn-update-save"
-          >
-            Guardar
-          </button>
-        </form>
-      </PopupWithForm>
-
-      <PopupWithForm
-        name={"profile"}
-        isOpen={isEditProfilePopupOpen}
-        title={"Editar Perfil"}
-        onClose={onClose}
-      >
-        <form className="formulary" id="formulary-profile" noValidate>
-          <input
-            className="formulary__data"
-            id="name-profile"
-            type="text"
-            placeholder="Nombre"
-            minLength="2"
-            maxLength="21"
-            name="name"
-            required
-          />
-          <span className="name-profile-error "></span>
-          <input
-            className="formulary__data"
-            id="about-me"
-            type="text"
-            placeholder="Acerca de mi"
-            minLength="2"
-            maxLength="30"
-            name="about"
-            required
-          />
-          <span className="about-me-error "></span>
-          <button
-            type="submit"
-            className="formulary__save-button"
-            id="btn-submit-profile"
-          >
-            Guardar
-          </button>
-        </form>
-      </PopupWithForm>
-
-      <PopupWithForm
-        name={"place"}
-        isOpen={isAddPlacePopupOpen}
-        title={"Nuevo Lugar"}
-        onClose={onClose}
-      >
-        <form className="formulary" id="formulary-place" noValidate>
-          <input
-            className="formulary__data"
-            id="place-title"
-            type="text"
-            minLength="2"
-            maxLength="30"
-            name="name"
-            placeholder="Título"
-            required
-          />
-          <span className="place-title-error "></span>
-          <input
-            className="formulary__data"
-            id="photo-link"
-            type="url"
-            placeholder="Enlace a la imagen"
-            name="link"
-            required
-          />
-          <span className="photo-link-error"></span>
-          <button
-            type="submit"
-            className="formulary__save-button"
-            id="btn-place-save"
-          >
-            Crear
-          </button>
-        </form>
-      </PopupWithForm>
 
       <PopupWithForm
         name={"confirmation"}
