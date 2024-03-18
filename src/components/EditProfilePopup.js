@@ -4,16 +4,33 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
   const currentUser = useContext(CurrentUserContext);
-
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
+  const [btnIsDisable, setBtnIsDisable] = useState(true);
+  const [nameError, setNameError] = useState("");
+  const [aboutError, setAboutError] = useState("");
+
+
+  
+
 
   // Funcion para tomar valores de los inputs y guardarlos en los states name y about
   function handleOnChangeInput(event) {
-    if (event.target.name === "name") {
-      setName(event.target.value);
+    const {name, value} = event.target
+    if (name === "name") {
+      setName(value);
+      if(value.length < 2){
+        setNameError("El nombre debe tener al menos 2 caracteres");
+      } else{
+        setNameError("");
+      }
     } else {
-      setAbout(event.target.value);
+      setAbout(value);
+      if(value.length < 2){
+        setAboutError("La descripción debe tener al menos 2 caracteres");
+      }else {
+        setAboutError("");
+      }
     }
   }
 
@@ -23,6 +40,13 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     setName(currentUser.name);
     setAbout(currentUser.about);
   }, [currentUser]);
+
+
+  //funcion para habilitar boton del formulario
+
+  useEffect(()=>{
+    setBtnIsDisable(!name || !about || name.length < 2 || about.length < 2 );
+  },[name, about]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -61,8 +85,9 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
           name="name"
           required
           onChange={handleOnChangeInput}
+          value={name}
         />
-        <span className="name-profile-error "></span>
+        <span className="name-profile-error">{nameError}</span>
         <input
           className="formulary__data"
           id="about-me"
@@ -73,12 +98,14 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
           name="about"
           required
           onChange={handleOnChangeInput}
+          value={about}
         />
-        <span className="about-me-error "></span>
+        <span className="about-me-error">{aboutError}</span>
         <button
           type="submit"
           className="formulary__save-button"
           id="btn-submit-profile"
+          disabled={btnIsDisable}
         >
           Guardar
         </button>

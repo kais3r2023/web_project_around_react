@@ -1,32 +1,45 @@
-import {React, useState} from "react";
+import {React, useEffect, useState} from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit }) {
 
+  function isValidURL(url) {
+    try{
+      new URL(url);
+      return(true);
+    } catch(error){
+      
+      return(false);
+    }
+  }
 
   const[ placeName, setPlaceName ] = useState("");
   const[ placeLink, setPlaceLink] = useState("");
+  const isLinkValid = isValidURL(placeLink);
+  const formIsValid = placeName.length > 2 && isLinkValid;
+  
 
-  function handlePlaceName(event){
-      setPlaceName(event.target.value);
-  }
 
-  function handlePlaceLink(event) {
-    setPlaceLink(event.target.value);
-  }
-
+  //funcion para habilitar el boton submit
+  
+ 
   function handleSubmit(event) {
     event.preventDefault();
     onAddPlaceSubmit({
       name: placeName,
       link: placeLink
-    })
+    })    
+  }
+  
+  function handleChange(event) {
+    if(event.target.name === "name"){
+      setPlaceName(event.target.value);
+    } else{
+      setPlaceLink(event.target.value);
+    }
   }
 
-  function clearStatesPopupOpen() {
-    placeName("");
-    placeLink("");
-  }
+  
 
   return (
     <PopupWithForm
@@ -50,9 +63,11 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit }) {
           name="name"
           placeholder="Título"
           required
-          onChange={handlePlaceName}
+          onChange={handleChange}
         />
-        <span className="place-title-error "></span>
+        {placeName.length <2 ?
+        <span className="place-title-error ">El nombre debe tener al menos 2 caracteres</span> : ""
+        }
         <input
           className="formulary__data"
           id="photo-link"
@@ -60,13 +75,16 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit }) {
           placeholder="Enlace a la imagen"
           name="link"
           required
-          onChange={handlePlaceLink}
+          onChange={handleChange}
         />
-        <span className="photo-link-error"></span>
+        {!isValidURL(placeLink)?
+        <span className="photo-link-error">La URL es inválida</span> : ""
+        }
         <button
           type="submit"
           className="formulary__save-button"
           id="btn-place-save"
+          disabled={!formIsValid}
         >
           Crear
         </button>

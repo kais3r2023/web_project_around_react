@@ -15,4 +15,5 @@
 
 .formulary__save-button:disabled{
     opacity: 0.2;
+    pointer-events: none;
 }

@@ -45,7 +45,7 @@ function Card({card, name, link, likes, onCardClick, onCardLike, onCardDelete })
           src={trashCan}
           onClick={handleDeleteClick}
         />
-        <img className="gallery__card_photo" src={link} onClick={handleClick} />
+        <img className="gallery__card_photo" src={link} onClick={handleClick} alt={`imagen de ${name}`}/>
         <div className="gallery__card_bar">
           <h3 className="gallery__card_bar-title">{name}</h3>
           <div>
